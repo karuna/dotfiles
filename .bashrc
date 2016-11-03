@@ -135,8 +135,9 @@ set_python2() {
   sudo ln -s -f /usr/bin/python2 /usr/bin/python
 }
 
-set_sod() {
-
+set_gcc5() {
+  export CC=gcc-5
+  export CXX=g++-5
 }
 
 enterprise() {
@@ -144,6 +145,7 @@ enterprise() {
 }
 
 karma_run() {
+  export QT_QPA_PLATFORM=''
   karma start spec/js/karma.config.js --no-single-run
 }
 
@@ -159,7 +161,7 @@ wrapper() {
 }
 
 die() {
-  kill -9 
+  kill -9
 }
 
 # ibus
@@ -171,11 +173,18 @@ export QT_IM_MODULE=ibus
 export GDK_USE_XFT=1
 export QT_XFT=true
 
-# java
-JAVA_HOME=/usr/lib/jvm/java-7-jdk
+#systemd
+export SYSTEMD_EDITOR="/usr/bin/vim"
+export EDITOR="/usr/bin/vim"
+export FCEDIT="$EDITOR"
+export VISUAL="$EDITOR"
+export SUDO_EDITOR="$EDITOR"
+
+#idea 
+export PATH=/opt/idea/bin:$PATH
 
 # Heroku
-export PATH=/usr/local/heroku/bin:$PATH
+#export PATH=/usr/local/heroku/bin:$PATH
 #export PATH=$PATH:$HOME/documents/heroku/bin # Add heroku-toolbelt
 
 # pyenv
@@ -202,7 +211,7 @@ eval "$(pyenv virtualenv-init -)"
 # }
 
 # dnvm dotnet version manager
-[[ -s "$HOME/.dnx/dnvm/dnvm.sh" ]] && source "$HOME/.dnx/dnvm/dnvm.sh" # Load dnvm
+#[[ -s "$HOME/.dnx/dnvm/dnvm.sh" ]] && source "$HOME/.dnx/dnvm/dnvm.sh" # Load dnvm
 
 # rbenv
 #export PATH="$HOME/.rbenv/bin:$PATH"
@@ -210,10 +219,13 @@ eval "$(pyenv virtualenv-init -)"
 #export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 # rsvm
-[[ -s $HOME/.rsvm/rsvm.sh ]] && . $HOME/.rsvm/rsvm.sh # This loads RSVM
-if [ -d $HOME/.cargo/bin ]; then
-  export PATH="$HOME/.cargo/bin:$PATH"
-fi
+#[[ -s $HOME/.rsvm/rsvm.sh ]] && . $HOME/.rsvm/rsvm.sh # This loads RSVM
+#if [ -d $HOME/.cargo/bin ]; then
+#  export PATH="$HOME/.cargo/bin:$PATH"
+#fi
+
+#rustup
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # swiftenv
 export SWIFTENV_ROOT="$HOME/.swiftenv"
@@ -224,22 +236,57 @@ eval "$(swiftenv init -)"
 export GOROOT="/usr/libgo"
 export GOPATH="$HOME/job/go"
 
-#rvm
+#phpbrew
+[[ -e ~/.phpbrew/bashrc ]] && source ~/.phpbrew/bashrc
+
+# java
+# jenv
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+#export JAVA_HOME="$HOME/.jenv/versions/1.8/"
+export JAVA_HOME="/usr/lib/jvm/java-8-jdk"
+
+# maven
+export M2_HOME=/opt/maven
+export M2=$M2_HOME/bin
+export MAVEN_OPTS=-Xms256m
+
+# vscode
+export PATH="$PATH:$HOME/download/languages/editor/code"
+#function __code {
+  #if [ "$@x" != 'x' ]; then
+    #(~/download/languages/editor/code/code "$@" &) &> /dev/null
+  #else
+    #(~/download/languages/editor/code/code &) &> /dev/null
+  #fi
+#}
+                       
+#alias code='__code'
+
+# Fucking gnu coreutils maintainer think they know better by adding non standard quoting style to ls output.
+# I'm gonna find whoever did this and do sd32u342utlewlwehjqwehqiweuty things to them
+export QUOTING_STYLE=literal
+
+# I can't type
+# turn 'gi tadd foo' to 'git add foo'
+alias gi="git"
+alias gpp="g++"
+eval $(dircolors -b $HOME/.dircolors)
+
+# tabtab source for yo package
+# uninstall by removing these lines or running `tabtab uninstall yo`
+#[ -f /home/karuna/.nvm/versions/node/v6.0.0/lib/node_modules/yo/node_modules/tabtab/.completions/yo.bash ] && . /home/karuna/.nvm/versions/node/v6.0.0/lib/node_modules/yo/node_modules/tabtab/.completions/yo.bash
+
+# rvm
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 [[ -r $rvm_path/scripts/completion ]] && source $rvm_path/scripts/completion
 
-export QUOTING_STYLE=literal
-# Fucking gnu coreutils maintainer think they know better by adding non standard quoting style to ls output. I'm gonna find whoever did this and do sd32u342utlewlwehjqwehqiweuty things to them
 
-# I can't type
-# turn 'gi tadd foo' to 'git add foo'
-gi () {
-  local c=${1}
-  cmd=("$@")
-  cmd[1]=${c:1}
-  cmd[0]=git
-  "${cmd[@]}"
+keepass_backup() {
+  ORIGIN_KEEPASS=$HOME/documents/karuna.kdbx
+  DESTINATION_KEEPASS=$HOME/backup/dropbox/keepass/
+  echo 'Copying keepass file...'
+  cp $ORIGIN_KEEPASS $DESTINATION_KEEPASS/karuna-`date +%Y%m%d`.kdbx
+  echo 'Done.'
 }
-eval $(dircolors -b $HOME/.dircolors)
-
